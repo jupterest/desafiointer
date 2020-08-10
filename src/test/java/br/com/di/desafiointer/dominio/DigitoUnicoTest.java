@@ -134,7 +134,7 @@ public class DigitoUnicoTest {
 				);
 
 
-		assertEquals(ex.getMessage(), msgErro);
+		assertEquals(msgErro, ex.getMessage());
 
 	}
 
@@ -152,7 +152,7 @@ public class DigitoUnicoTest {
 				);
 
 
-		assertEquals(ex.getMessage(), msgErro);
+		assertEquals(msgErro, ex.getMessage());
 
 	}
 	
@@ -170,7 +170,7 @@ public class DigitoUnicoTest {
 				() -> digitoUnico.calcular(valor), msgErro
 				);
 
-		assertEquals(ex.getMessage(), msgErro);
+		assertEquals(msgErro, ex.getMessage());
 	}
 	
 	@Test
@@ -188,7 +188,7 @@ public class DigitoUnicoTest {
 				);
 
 
-		assertEquals(ex.getMessage(), msgErro);
+		assertEquals(msgErro, ex.getMessage());
 	}
 	
 	
@@ -208,7 +208,7 @@ public class DigitoUnicoTest {
 				);
 
 
-		assertEquals(ex.getMessage(), msgErro);
+		assertEquals(msgErro, ex.getMessage());
 
 	}
 

@@ -7,8 +7,10 @@ import br.com.di.desafiointer.infra.ResourceBundleWrapper;
 
 public class DigitoUnico {
 
+	private Integer id;
 	private String valor;
 	private Integer digito;
+	private Integer numeroDeVezes;
 	
 	private Integer digitoCalculado;
 	
@@ -17,7 +19,7 @@ public class DigitoUnico {
 	public int calcular(String valor, int... arrayNumeroDeVezes) throws ValorNaoNumericoException, NumeroForaDoLimiteException{
 		this.valor = valor;
 
-		int numeroDeVezes = arrayNumeroDeVezes.length>0 ? arrayNumeroDeVezes[0] : 1;
+		numeroDeVezes = arrayNumeroDeVezes.length>0 ? arrayNumeroDeVezes[0] : 1;
 		verificarLimiteDeVezes(numeroDeVezes);
 		
 		digito = calcular(valor) * numeroDeVezes;
@@ -76,20 +78,38 @@ public class DigitoUnico {
 		return valorNumerico;
 	}
 
-	public String getValor() {
-		return valor;
+	public Integer getId() {
+		return id;
 	}
 
-	public Integer getDigito() {
-		return digito;
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getValor() {
+		return valor;
 	}
 
 	public void setValor(String valor) {
 		this.valor = valor;
 	}
 
+	public Integer getDigito() {
+		return digito;
+	}
+
 	public void setDigito(Integer digito) {
 		this.digito = digito;
 	}
+
+	public Integer getNumeroDeVezes() {
+		return numeroDeVezes;
+	}
+
+	public void setNumeroDeVezes(Integer numeroDeVezes) {
+		this.numeroDeVezes = numeroDeVezes;
+	}
+
+	
 
 }

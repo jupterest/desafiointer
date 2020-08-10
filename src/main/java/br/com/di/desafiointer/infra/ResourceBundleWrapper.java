@@ -11,7 +11,7 @@ public class ResourceBundleWrapper {
 	
 	static {
 		resourceBundle =
-			      ResourceBundle.getBundle("application", new Locale("pt", "BR"));
+			      ResourceBundle.getBundle("messages_pt_BR", new Locale("pt", "BR"));
 	}
 	
 	public static String getMessage(String key, Object... params) {

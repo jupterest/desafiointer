@@ -1,5 +1,10 @@
 # Getting Started
 
+### Acesso ao BD
+
+http://localhost:8080/h2-console
+
+
 ### Reference Documentation
 For further reference, please consider the following sections:
 
