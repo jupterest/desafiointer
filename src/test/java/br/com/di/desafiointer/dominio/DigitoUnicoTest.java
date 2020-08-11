@@ -35,7 +35,7 @@ public class DigitoUnicoTest {
 		try {
 			digito = digitoUnico.calcular("2");
 			assertEquals(2, digito);
-			digito = digitoUnico.calcular("3");
+			digito = digitoUnico.calcular("3",null);
 			assertEquals(3, digito);
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -116,6 +116,24 @@ public class DigitoUnicoTest {
 		}
 
 		assertEquals(3, digito);
+	}
+	
+	
+	@Test
+	@DisplayName("calcular quando enviado o valor com 20 digitos e 6 repeticoes")
+	public void lancarExcecaoAoCalcularValorVezesCom20Digitos6Repeticoes() {
+
+		String valor = "95874236979587423697";
+		String msgErro = ResourceBundleWrapper.getMessage("msg.erro.valor.nao.numerico", valor);
+
+
+		ValorNaoNumericoException ex = assertThrows(
+				ValorNaoNumericoException.class, 
+				() -> digitoUnico.calcular(valor), msgErro
+				);
+
+		assertEquals(msgErro, ex.getMessage());
+		
 	}
 	
 	

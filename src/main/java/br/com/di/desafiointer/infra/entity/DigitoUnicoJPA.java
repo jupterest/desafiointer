@@ -1,15 +1,20 @@
 package br.com.di.desafiointer.infra.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import br.com.di.desafiointer.dominio.digitoUnico.DigitoUnico;
+
 @Entity
 public class DigitoUnicoJPA {
 
-	@Id
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	private String valor;
@@ -18,12 +23,21 @@ public class DigitoUnicoJPA {
 	
 	private Integer numeroDeVezes;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(nullable = false)
+	@ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
+    @JoinColumn()
 	private UsuarioJPA usuario;
 	
 	public DigitoUnicoJPA() {
 	}
+	
+	public DigitoUnicoJPA(DigitoUnico digitoUnico) {
+		this.id = digitoUnico.getId();
+		this.digito = digitoUnico.getDigito();
+		this.numeroDeVezes = digitoUnico.getNumeroDeVezes();
+		this.valor = digitoUnico.getValor();
+		this.usuario = new UsuarioJPA(digitoUnico.getUsuario());
+	}
+	
 
 	public Integer getId() {
 		return id;
@@ -65,6 +79,7 @@ public class DigitoUnicoJPA {
 		this.usuario = usuario;
 	}
 
+	
 	
 
 }

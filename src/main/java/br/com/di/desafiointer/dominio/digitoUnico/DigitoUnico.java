@@ -3,6 +3,7 @@ package br.com.di.desafiointer.dominio.digitoUnico;
 import java.util.Arrays;
 import java.util.List;
 
+import br.com.di.desafiointer.dominio.usuario.Usuario;
 import br.com.di.desafiointer.infra.ResourceBundleWrapper;
 
 public class DigitoUnico {
@@ -11,23 +12,32 @@ public class DigitoUnico {
 	private String valor;
 	private Integer digito;
 	private Integer numeroDeVezes;
-	
+	private Usuario usuario;
+
 	private Integer digitoCalculado;
+
+	public DigitoUnico() {
+	}
 	
-	
-	
+	public DigitoUnico(Integer id, String valor, Integer digito, Integer numeroDeVezes) {
+		this.id = id;
+		this.valor = valor;
+		this.digito = digito;
+		this.numeroDeVezes = numeroDeVezes;
+	}
+
 	public int calcular(String valor, int... arrayNumeroDeVezes) throws ValorNaoNumericoException, NumeroForaDoLimiteException{
 		this.valor = valor;
 
-		numeroDeVezes = arrayNumeroDeVezes.length>0 ? arrayNumeroDeVezes[0] : 1;
+		numeroDeVezes = arrayNumeroDeVezes!=null && arrayNumeroDeVezes.length>0 ? arrayNumeroDeVezes[0] : 1;
 		verificarLimiteDeVezes(numeroDeVezes);
-		
+
 		digito = calcular(valor) * numeroDeVezes;
-		
+
 		while(digito > 9) digito = calcular(digito.toString());
-		
+
 		return digito;
-		
+
 	}
 
 	private int calcular(String valor) throws ValorNaoNumericoException, NumeroForaDoLimiteException{
@@ -53,19 +63,19 @@ public class DigitoUnico {
 			throw new NumeroForaDoLimiteException(ResourceBundleWrapper.getMessage("msg.erro.numero.abaixo.limite", valor, LIMITE.MINIMO_VALOR.value()));
 		}
 	}
-	
+
 	private void verificarLimiteDeVezes(int valor) throws NumeroForaDoLimiteException{
 		// 1 <= k <= 10ˆ5
 		if (valor < 1) {
 			throw new NumeroForaDoLimiteException(ResourceBundleWrapper.getMessage("msg.erro.numero.abaixo.limite", valor, LIMITE.MINIMO_VEZES.value()));
 		}
-		
+
 		if (valor > LIMITE.MAXIMO_VEZES.value()) {
 			throw new NumeroForaDoLimiteException(ResourceBundleWrapper.getMessage("msg.erro.numero.acima.limite", valor, LIMITE.MAXIMO_VEZES.value()));
 		}
-		
+
 	}
-	
+
 	private int converterEmInteiro(String valor) throws ValorNaoNumericoException{
 		int valorNumerico = 0;
 
@@ -76,14 +86,6 @@ public class DigitoUnico {
 		}
 
 		return valorNumerico;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public String getValor() {
@@ -110,6 +112,22 @@ public class DigitoUnico {
 		this.numeroDeVezes = numeroDeVezes;
 	}
 
-	
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+
 
 }

@@ -22,7 +22,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.di.desafiointer.aplicacao.usuario.GerenciarUsuarioService;
 import br.com.di.desafiointer.aplicacao.usuario.UsuarioDTO;
 import br.com.di.desafiointer.dominio.RegistroNaoEncontradoException;
-import br.com.di.desafiointer.dominio.usuario.EmailInvalidoException;
 import br.com.di.desafiointer.dominio.usuario.RepositorioUsuario;
 import br.com.di.desafiointer.dominio.usuario.UsuarioException;
 import br.com.di.desafiointer.infra.ResourceException;
@@ -39,7 +38,8 @@ public class UsuarioController {
 	@PostMapping
 	public ResponseEntity<UsuarioDTO> cadastrar(@RequestBody @Valid UsuarioDTO usuario, UriComponentsBuilder uriBuilder) {
 		try {
-						
+			
+			validarCampos(usuario);
 			usuarioService = new GerenciarUsuarioService(repositorioUsuario);
 			usuario = usuarioService.cadastrar(usuario);
 			
@@ -52,6 +52,10 @@ public class UsuarioController {
 		
 	}
 	
+	private void validarCampos(@Valid UsuarioDTO usuario) {
+		usuario.getResultados().forEach(e -> e.setUsuario(usuario));
+	}
+
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<UsuarioDTO> editar(@PathVariable Integer id, @RequestBody @Valid UsuarioDTO usuario) {

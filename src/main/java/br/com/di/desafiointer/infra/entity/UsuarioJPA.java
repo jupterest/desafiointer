@@ -25,7 +25,7 @@ public class UsuarioJPA {
 	
 	private String email;
 	
-	 @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY,
+	@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY,
 	            cascade = CascadeType.ALL)
 	private List<DigitoUnicoJPA> resultados;
 	
@@ -33,9 +33,15 @@ public class UsuarioJPA {
 	}
 	
 	public UsuarioJPA(Usuario usuario) {
+		
 		this.email = usuario.getEmail().getEndereco();
 		this.id = usuario.getId();
 		this.nome = usuario.getNome();
+		
+		if(usuario.getResultados()!=null)
+			this.resultados = usuario.getResultados().stream()
+				.map(DigitoUnicoJPA::new)
+				.collect(Collectors.toList());
 	}
 	
 	public Integer getId() {

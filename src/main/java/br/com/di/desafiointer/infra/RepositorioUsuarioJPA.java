@@ -13,6 +13,7 @@ import br.com.di.desafiointer.dominio.usuario.EmailInvalidoException;
 import br.com.di.desafiointer.dominio.usuario.RepositorioUsuario;
 import br.com.di.desafiointer.dominio.usuario.Usuario;
 import br.com.di.desafiointer.dominio.usuario.UsuarioException;
+import br.com.di.desafiointer.infra.entity.DigitoUnicoJPA;
 import br.com.di.desafiointer.infra.entity.UsuarioJPA;
 
 @Component("repositorioUsuarioJPA")
@@ -21,6 +22,9 @@ public class RepositorioUsuarioJPA implements RepositorioUsuario{
 
 	@Autowired
 	private RepositorioUsuarioSpring repositorioUsuarioSpring;
+	
+	@Autowired
+	private RepositorioDigitoUnicoSpring repositorioDigitoUnicoSpring;
 
 	public RepositorioUsuarioJPA() {
 	}
@@ -28,8 +32,18 @@ public class RepositorioUsuarioJPA implements RepositorioUsuario{
 	@Override
 	public Usuario cadastrar(Usuario usuario) throws UsuarioException {
 
-		UsuarioJPA usuJPA = repositorioUsuarioSpring.save(new UsuarioJPA(usuario));
+		UsuarioJPA usuJPA = new UsuarioJPA(usuario);
+		List<DigitoUnicoJPA> resultados = usuJPA.getResultados();
+		usuJPA.setResultados(null);
+		
+		usuJPA = repositorioUsuarioSpring.save(usuJPA);
+		
+		preencherUsuarioDosResultados(usuJPA, resultados);
+		
+		repositorioDigitoUnicoSpring.saveAll(resultados);
+		
 		usuario.setId(usuJPA.getId());
+		
 		return usuario;
 	}
 
@@ -79,6 +93,10 @@ public class RepositorioUsuarioJPA implements RepositorioUsuario{
 	@Override
 	public List<Usuario> retornarTodos() throws UsuarioException {
 		return UsuarioJPA.converter(repositorioUsuarioSpring.findAll());
+	}
+	
+	private void preencherUsuarioDosResultados(UsuarioJPA usuJPA, List<DigitoUnicoJPA> resultados) {
+		resultados.forEach(e -> e.setUsuario(usuJPA));
 	}
 
 }

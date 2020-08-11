@@ -7,6 +7,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import br.com.di.desafiointer.aplicacao.digitoUnico.DigitoUnicoDTO;
+import br.com.di.desafiointer.dominio.usuario.Email;
+import br.com.di.desafiointer.dominio.usuario.EmailInvalidoException;
 import br.com.di.desafiointer.dominio.usuario.Usuario;
 
 
@@ -19,6 +21,7 @@ public class UsuarioDTO {
 	private String nome;
 	
 	@NotNull 
+	@javax.validation.constraints.Email(message = "Informe um e-mail válido.")
 	@Size(min=5, max=300)
 	private String email;
 	
@@ -77,6 +80,10 @@ public class UsuarioDTO {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public Usuario converter() throws EmailInvalidoException {
+		return new Usuario(this.id, this.nome, new Email(this.email));
 	}
 	
 	public static List<UsuarioDTO> converter(List<Usuario> usuarios) {

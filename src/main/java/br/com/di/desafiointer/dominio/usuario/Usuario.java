@@ -18,24 +18,26 @@ public class Usuario {
 	}
 	
 	public Usuario(Integer id) {
-		super();
 		this.id = id;
 	}
 	
 	public Usuario(Integer id, String nome) {
-		super();
 		this.id = id;
 		this.nome = nome;
 	}
 
 	public Usuario(Integer id, String nome, Email email) {
-		super();
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
 	}
 
-
+	public Usuario(Integer id, String nome, Email email, List<DigitoUnico> resultados) {
+		this.id = id;
+		this.nome = nome;
+		this.email = email;
+		this.resultados = resultados;
+	}
 
 	public void addResultado(DigitoUnico resultado) throws ResultadoInvalidoException {
 		if(resultado == null || 
