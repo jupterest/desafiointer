@@ -1,15 +1,27 @@
 package br.com.di.desafiointer.aplicacao.usuario;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import br.com.di.desafiointer.aplicacao.digitoUnico.DigitoUnicoDTO;
 import br.com.di.desafiointer.dominio.usuario.Usuario;
 
+
 public class UsuarioDTO {
 	
 	private Integer id;
+	
+	@NotNull 
+	@Size(min=5, max=250)
 	private String nome;
+	
+	@NotNull 
+	@Size(min=5, max=300)
 	private String email;
+	
 	private List<DigitoUnicoDTO> resultados; 
 
 	public UsuarioDTO() {
@@ -65,6 +77,12 @@ public class UsuarioDTO {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public static List<UsuarioDTO> converter(List<Usuario> usuarios) {
+		return usuarios.stream()
+				.map(UsuarioDTO::new)
+				.collect(Collectors.toList());
 	}
 
 }

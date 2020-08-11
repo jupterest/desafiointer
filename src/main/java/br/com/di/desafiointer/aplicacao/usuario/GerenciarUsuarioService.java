@@ -1,14 +1,13 @@
 package br.com.di.desafiointer.aplicacao.usuario;
 
-import java.util.Optional;
+import java.util.List;
 
-import br.com.di.desafiointer.controller.NumberUtil;
+import br.com.di.desafiointer.dominio.RegistroNaoEncontradoException;
 import br.com.di.desafiointer.dominio.usuario.Email;
 import br.com.di.desafiointer.dominio.usuario.EmailInvalidoException;
 import br.com.di.desafiointer.dominio.usuario.RepositorioUsuario;
 import br.com.di.desafiointer.dominio.usuario.Usuario;
 import br.com.di.desafiointer.dominio.usuario.UsuarioException;
-import br.com.di.desafiointer.infra.ResourceBundleWrapper;
 
 public class GerenciarUsuarioService {
 	
@@ -18,25 +17,22 @@ public class GerenciarUsuarioService {
 		this.repositorioUsuario = repositorioUsuario;
 	}
 	
-	public void cadastrar(UsuarioDTO usuario) throws UsuarioException, EmailInvalidoException{
+	public UsuarioDTO cadastrar(UsuarioDTO usuario) throws UsuarioException, EmailInvalidoException{
 		
-		if( Optional.ofNullable(usuario).isEmpty() ) {
-			throw new UsuarioException(ResourceBundleWrapper.getMessage("msg.erro.objeto.obrigatorio", "Usuario"));
-		}
+		UsuarioDTO usuDTO = new UsuarioDTO(
+				repositorioUsuario.cadastrar(
+						new Usuario(
+							usuario.getId(),
+							usuario.getNome(),
+							new Email(usuario.getEmail())
+						)
+				)
+		);
 		
-		repositorioUsuario.cadastrar(new Usuario(
-				//UUID.randomUUID().toString(),
-				NumberUtil.generateId(),
-				usuario.getNome(),
-				new Email(usuario.getEmail())
-		));
+		return usuDTO;
 	}
 	
-	public void editar(UsuarioDTO usuario) throws UsuarioException, EmailInvalidoException{
-		
-		if( Optional.ofNullable(usuario).isEmpty() ) {
-			throw new UsuarioException(ResourceBundleWrapper.getMessage("msg.erro.objeto.obrigatorio", "Usuario"));
-		}
+	public void editar(UsuarioDTO usuario) throws UsuarioException, EmailInvalidoException, RegistroNaoEncontradoException{
 		
 		repositorioUsuario.editar(new Usuario(
 				usuario.getId(),
@@ -45,20 +41,20 @@ public class GerenciarUsuarioService {
 		));
 	}
 	
-	public void excluir(UsuarioDTO usuario) throws UsuarioException{
-		
-		if( Optional.ofNullable(usuario).isEmpty() ) {
-			throw new UsuarioException(ResourceBundleWrapper.getMessage("msg.erro.objeto.obrigatorio", "Usuario"));
-		}
+	public void excluir(UsuarioDTO usuario) throws UsuarioException, RegistroNaoEncontradoException{
 		
 		repositorioUsuario.excluir(new Usuario(
 				usuario.getId()
 		));
 	}
 	
-	public Usuario pesquisar(String email) throws UsuarioException, EmailInvalidoException{
+	public Usuario pesquisar(String email) throws UsuarioException, EmailInvalidoException, RegistroNaoEncontradoException{
 		Email emailObj = new Email(email);
 		return repositorioUsuario.pesquisar(emailObj);
+	}
+	
+	public List<Usuario> retornarTodos() throws UsuarioException{
+		return repositorioUsuario.retornarTodos();
 	}
 	
 

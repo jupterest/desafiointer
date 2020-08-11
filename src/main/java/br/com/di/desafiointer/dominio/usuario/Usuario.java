@@ -8,7 +8,9 @@ import br.com.di.desafiointer.dominio.digitoUnico.DigitoUnico;
 public class Usuario {
 
 	private Integer id;
+	
 	private String nome;
+	
 	private Email email;
 	private List<DigitoUnico> resultados;
 	
@@ -18,6 +20,12 @@ public class Usuario {
 	public Usuario(Integer id) {
 		super();
 		this.id = id;
+	}
+	
+	public Usuario(Integer id, String nome) {
+		super();
+		this.id = id;
+		this.nome = nome;
 	}
 
 	public Usuario(Integer id, String nome, Email email) {
