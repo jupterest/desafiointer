@@ -1,10 +1,8 @@
 package br.com.di.desafiointer.aplicacao.usuario;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.di.desafiointer.dominio.RegistroNaoEncontradoException;
-import br.com.di.desafiointer.dominio.digitoUnico.DigitoUnico;
 import br.com.di.desafiointer.dominio.usuario.Email;
 import br.com.di.desafiointer.dominio.usuario.EmailInvalidoException;
 import br.com.di.desafiointer.dominio.usuario.RepositorioUsuario;
@@ -21,19 +19,12 @@ public class GerenciarUsuarioService {
 	
 	public UsuarioDTO cadastrar(UsuarioDTO usuario) throws UsuarioException, EmailInvalidoException{
 		
-		List<DigitoUnico> resultados =  new ArrayList<DigitoUnico>();
-		
-		if(usuario.getResultados()!=null) {
-			usuario.getResultados().forEach( d -> resultados.add( d.converter() ));
-		}
-		
 		UsuarioDTO usuDTO = new UsuarioDTO(
 				repositorioUsuario.cadastrar(
 						new Usuario(
 							usuario.getId(),
 							usuario.getNome(),
-							new Email(usuario.getEmail()),
-							resultados
+							new Email(usuario.getEmail())
 						)
 				)
 		);

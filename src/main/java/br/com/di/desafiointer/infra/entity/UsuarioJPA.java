@@ -1,5 +1,6 @@
 package br.com.di.desafiointer.infra.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import br.com.di.desafiointer.dominio.digitoUnico.DigitoUnico;
 import br.com.di.desafiointer.dominio.usuario.Email;
 import br.com.di.desafiointer.dominio.usuario.EmailInvalidoException;
 import br.com.di.desafiointer.dominio.usuario.Usuario;
@@ -25,7 +27,7 @@ public class UsuarioJPA {
 	
 	private String email;
 	
-	@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY,
+	@OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER,
 	            cascade = CascadeType.ALL)
 	private List<DigitoUnicoJPA> resultados;
 	
@@ -75,9 +77,19 @@ public class UsuarioJPA {
 	public void setResultados(List<DigitoUnicoJPA> resultados) {
 		this.resultados = resultados;
 	}
+	
+	public Usuario converter() throws EmailInvalidoException {
+		return new Usuario(this.id, this.nome, new Email(this.email));
+	}
 
 	public Usuario toUsuario() throws EmailInvalidoException {
-		return new Usuario(this.id, this.nome, new Email(this.email));
+		List<DigitoUnico> resultados =  new ArrayList<DigitoUnico>();
+
+		if(this.resultados!=null) {
+			this.resultados.forEach( d -> resultados.add( d.converter() ));
+		}
+
+		return new Usuario(this.id, this.nome, new Email(this.email), resultados);
 	}
 	
 	public static List<Usuario> converter(List<UsuarioJPA> usuarios){

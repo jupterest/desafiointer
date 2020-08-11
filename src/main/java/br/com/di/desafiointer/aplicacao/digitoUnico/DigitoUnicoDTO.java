@@ -45,6 +45,7 @@ public class DigitoUnicoDTO {
 	}
 
 	public DigitoUnicoDTO(DigitoUnico digitoUnico) {
+		this.id = digitoUnico.getId();
 		this.valor = digitoUnico.getValor();
 		this.numeroDeVezes = digitoUnico.getNumeroDeVezes();
 		this.digito = digitoUnico.getDigito();

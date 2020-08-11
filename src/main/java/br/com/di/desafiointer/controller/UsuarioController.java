@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.di.desafiointer.aplicacao.usuario.AssociarResultadoAoUsuarioService;
 import br.com.di.desafiointer.aplicacao.usuario.GerenciarUsuarioService;
 import br.com.di.desafiointer.aplicacao.usuario.UsuarioDTO;
 import br.com.di.desafiointer.dominio.RegistroNaoEncontradoException;
@@ -35,11 +36,12 @@ public class UsuarioController {
 	
 	private GerenciarUsuarioService usuarioService;
 	
+	private AssociarResultadoAoUsuarioService associarResultadoAoUsuarioService;
+	
 	@PostMapping
 	public ResponseEntity<UsuarioDTO> cadastrar(@RequestBody @Valid UsuarioDTO usuario, UriComponentsBuilder uriBuilder) {
 		try {
 			
-			validarCampos(usuario);
 			usuarioService = new GerenciarUsuarioService(repositorioUsuario);
 			usuario = usuarioService.cadastrar(usuario);
 			
@@ -52,10 +54,34 @@ public class UsuarioController {
 		
 	}
 	
-	private void validarCampos(@Valid UsuarioDTO usuario) {
+	@PostMapping("/addResultado")
+	@Transactional
+	public ResponseEntity<UsuarioDTO> addResultado(@RequestBody @Valid UsuarioDTO usuario) {
+		try {
+			
+			preencherUsuarioDosResultados(usuario);			
+			associarResultadoAoUsuarioService = new AssociarResultadoAoUsuarioService(repositorioUsuario);
+			associarResultadoAoUsuarioService.associar(usuario);
+			removerUsuarioDosResultados(usuario);
+			
+			return ResponseEntity.ok(usuario);
+			
+		} catch (RegistroNaoEncontradoException e) {
+			throw new ResourceException(HttpStatus.BAD_REQUEST, e.getMessage());
+		} catch (Exception e) {
+			throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+		}
+		
+	}
+	
+	private void preencherUsuarioDosResultados(@Valid UsuarioDTO usuario) {
 		usuario.getResultados().forEach(e -> e.setUsuario(usuario));
 	}
 
+	private void removerUsuarioDosResultados(@Valid UsuarioDTO usuario) {
+		usuario.getResultados().forEach(e -> e.setUsuario(new UsuarioDTO(usuario.getId(), usuario.getNome(), usuario.getEmail())));
+	}
+	
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<UsuarioDTO> editar(@PathVariable Integer id, @RequestBody @Valid UsuarioDTO usuario) {
@@ -109,6 +135,7 @@ public class UsuarioController {
 	@GetMapping("/todos")
 	public List<UsuarioDTO> listarTodos(){
 		try {
+			usuarioService = new GerenciarUsuarioService(repositorioUsuario);
 			return UsuarioDTO.converter(usuarioService.retornarTodos());
 		} catch (UsuarioException e) {
 			e.printStackTrace();

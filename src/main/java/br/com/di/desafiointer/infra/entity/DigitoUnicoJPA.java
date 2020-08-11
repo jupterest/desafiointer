@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import br.com.di.desafiointer.dominio.digitoUnico.DigitoUnico;
+import br.com.di.desafiointer.dominio.usuario.EmailInvalidoException;
 
 @Entity
 public class DigitoUnicoJPA {
@@ -79,7 +80,19 @@ public class DigitoUnicoJPA {
 		this.usuario = usuario;
 	}
 
-	
+	public DigitoUnico converter() {
+		DigitoUnico digito = null;
+		
+		try {
+			digito = new DigitoUnico(this.id, this.valor, this.digito, this.numeroDeVezes);
+			if(this.usuario!=null) {
+				digito.setUsuario(this.usuario.converter());
+			}			
+			return digito;
+		} catch (EmailInvalidoException e) {
+			return digito;
+		}
+	}
 	
 
 }

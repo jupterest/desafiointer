@@ -1,5 +1,6 @@
 package br.com.di.desafiointer.aplicacao.usuario;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,9 +46,17 @@ public class UsuarioDTO {
 	}
 
 	public UsuarioDTO(Usuario usuario) {
+		
+		List<DigitoUnicoDTO> resultados =  new ArrayList<DigitoUnicoDTO>();
+
+		if(usuario.getResultados()!=null) {
+			usuario.getResultados().forEach( d -> resultados.add( new DigitoUnicoDTO(d) ));
+		}
+		
 		this.id = usuario.getId();
 		this.nome = usuario.getNome();
 		this.email = usuario.getEmail().getEndereco();
+		this.resultados = resultados;
 	}
 	
 	public String getNome() {

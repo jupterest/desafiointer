@@ -33,23 +33,47 @@ public class RepositorioUsuarioJPA implements RepositorioUsuario{
 	public Usuario cadastrar(Usuario usuario) throws UsuarioException {
 
 		UsuarioJPA usuJPA = new UsuarioJPA(usuario);
-		List<DigitoUnicoJPA> resultados = usuJPA.getResultados();
 		usuJPA.setResultados(null);
 		
 		usuJPA = repositorioUsuarioSpring.save(usuJPA);
-		
-		preencherUsuarioDosResultados(usuJPA, resultados);
-		
-		repositorioDigitoUnicoSpring.saveAll(resultados);
 		
 		usuario.setId(usuJPA.getId());
 		
 		return usuario;
 	}
+	
+	@Override
+	public Usuario adicionarResultados(Usuario usuario) throws UsuarioException, RegistroNaoEncontradoException {
 
+		UsuarioJPA usuJPA = new UsuarioJPA(usuario);
+		List<DigitoUnicoJPA> resultados = usuJPA.getResultados();
+		
+		Optional<UsuarioJPA> op = repositorioUsuarioSpring.findById(usuario.getId()); 
+		
+		if(op.isEmpty()) {
+			throw new RegistroNaoEncontradoException(ResourceBundleWrapper.getMessage("mmsg.erro.registro.naoencontrado"));
+		}
+		
+		usuJPA = op.get();
+		usuJPA.setResultados(null);
+		
+		repositorioDigitoUnicoSpring.deleteByUsuario(usuJPA);
+
+		preencherUsuarioDosResultados(usuJPA, resultados);
+		
+		resultados = (List<DigitoUnicoJPA>) repositorioDigitoUnicoSpring.saveAll(resultados);
+		usuJPA.setResultados(resultados);
+		
+		try {
+			return usuJPA.toUsuario();
+		} catch (EmailInvalidoException e) {
+			throw new UsuarioException(e);
+		}
+	}
 	@Override
 	public void editar(Usuario usuario) throws UsuarioException, RegistroNaoEncontradoException {
 
+		
 		Optional<UsuarioJPA> optional = repositorioUsuarioSpring.findById(usuario.getId());
 
 		if (optional.isPresent()) {
